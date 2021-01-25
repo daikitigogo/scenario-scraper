@@ -1,0 +1,14 @@
+{
+  "text": {
+    "selector": "#textContent-test",
+    "property": "textContent"
+  },
+  "value": {
+    "selector": "#value-test",
+    "property": "value"
+  },
+  "data": {
+    "selector": "#data-test",
+    "property": "data-xyz"
+  }
+}

@@ -1,0 +1,6 @@
+[
+  "Line: 1, action is required.",
+  "Line: 2, selector is required.",
+  "Line: 3, action must be Click,Select,Input.",
+  "Line: 4, waitTime must be number."
+]

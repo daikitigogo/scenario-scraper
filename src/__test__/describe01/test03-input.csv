@@ -1,0 +1,4 @@
+action,selector,value,waitTime
+Click,aaa,val,
+Select,bbb,,10
+Input,ccc,,

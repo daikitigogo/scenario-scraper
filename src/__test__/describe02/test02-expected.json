@@ -1,0 +1,6 @@
+{
+  "text": "Hello textContent!",
+  "value": "Hello value!",
+  "data": "Hello data-xyz!",
+  "errors": {}
+}

@@ -1,0 +1,5 @@
+action,selector,value,waitTime
+,,,
+Click,,,
+XXX,aaa,,
+Click,aaa,,1.0

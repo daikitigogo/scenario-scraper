@@ -1,0 +1,5 @@
+[
+  { "action": "Click", "selector": "#click-target", "waitTime": 1000 },
+  { "action": "Select", "selector": "#select-target", "value": "1", "waitTime": 1000 },
+  { "action": "Input", "selector": "#input-target", "value": "input-test!", "waitTime": 1000 }
+]

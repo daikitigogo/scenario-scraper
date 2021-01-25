@@ -1,0 +1,14 @@
+{
+  "text": {
+    "selector": "",
+    "property": "textContent"
+  },
+  "alt": {
+    "selector": "img",
+    "property": "alt"
+  },
+  "className": {
+    "selector": "",
+    "property": "class"
+  }
+}

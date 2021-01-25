@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="click-test">
+    <button id="click-target" onclick="document.querySelector('#click-result').textContent = '   click-test!   '">Click Test</button>
+    <span id="click-result"></span>
+  </div>
+  <div id="select-test">
+    <select id="select-target" onchange="document.querySelector('#select-result').textContent = this.value">
+      <option value="0">0</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+    </select>
+    <span id="select-result"></span>
+  </div>
+  <div id="input-test">
+    <input type="text" id="input-target" onkeyup="document.querySelector('#input-result').textContent = this.value">
+    <span id="input-result"></span>
+  </div>
+  <div id="map-test">
+    <span id="textContent-test">Hello textContent!</span>
+    <input type="radio" id="value-test" value="Hello value!">
+    <span id="data-test" data-xyz="Hello data-xyz!">xyz</span>
+  </div>
+  <div id="maparray-test">
+    <div class="maparray">
+      <img src="/" alt="alt1">
+      <span>maparray-test1</span>
+    </div>
+    <div class="maparray">
+      <img src="/" alt="alt2">
+      maparray-test2
+    </div>
+    <div class="maparray">
+      <img src="/" alt="alt3">
+      maparray-test3
+    </div>
+  </div>
+</body>
+</html>
