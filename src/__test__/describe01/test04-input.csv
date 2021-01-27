@@ -1,4 +1,4 @@
 action,selector,value,waitTime
 Click,aaa,val,
-Select,bbb,,10
+Select,bbb,#bind:test,10
 Input,ccc,,

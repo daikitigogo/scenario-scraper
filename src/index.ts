@@ -71,7 +71,7 @@ const validate = (records: KeyStringObject[]): string[] => {
     if (record.waitTime.match(/^[0-9]*$/) === null) {
       return `Line: ${i + 1}, waitTime must be number.`
     }
-    return undefined;
+    return '';
   });
   return results.filter(x => x);
 };
@@ -81,17 +81,17 @@ const validate = (records: KeyStringObject[]): string[] => {
  * @param record csv record
  * @param replaceValue replace value
  */
-const toScenario = (record: KeyStringObject, replaceValue?: string): Scenario => {
+const toScenario = (record: KeyStringObject, replace: KeyStringObject): Scenario => {
   const result = {
     action: ActionType.find(x => x === record.action),
     selector: record.selector,
     value: record.value,
     waitTime: Number(record.waitTime),
   };
-  if (!replaceValue) {
+  if (!result.value.startsWith('#bind:')) {
     return result;
   }
-  return { ...result, value: replaceValue };
+  return { ...result, value: replace[result.value.split(':')[1]] };
 }
 
 /**
@@ -99,7 +99,7 @@ const toScenario = (record: KeyStringObject, replaceValue?: string): Scenario =>
  * @param path csv file path
  * @param replaceValue replace value
  */
-export const loadScenarioFromCsv = (path: string, replaceValue: { [key: number]: string } = {}): Promise<Scenario[]> => {
+export const loadScenarioFromCsv = (path: string, replace: KeyStringObject = {}): Promise<Scenario[]> => {
   return new Promise((resolve, reject) => {
     fs.createReadStream(path)
       .pipe(parse({ columns: true }, (_, d) => {
@@ -114,7 +114,7 @@ export const loadScenarioFromCsv = (path: string, replaceValue: { [key: number]:
             throw new Error(validateResult.join('\n'));
           }
           
-          resolve(Array.from<{}>(d).map((x, i) => toScenario(x, replaceValue[i])));
+          resolve(Array.from<{}>(d).map(x => toScenario(x, replace)));
         } catch (e) {
           reject(e.message);
         }
