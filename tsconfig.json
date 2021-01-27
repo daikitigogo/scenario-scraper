@@ -1,9 +1,10 @@
 {
-  "include": ["./src"],
-  "exclude": ["./**/__test__/*"],
+  "include": ["src"],
+  "exclude": ["src/**/__test__/**"],
   "compilerOptions": {
     "outDir": "./dist",
-    "declaration": false,
+    "declaration": true,
+    "sourceMap": true,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
