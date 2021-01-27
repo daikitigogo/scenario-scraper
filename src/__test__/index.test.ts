@@ -47,7 +47,7 @@ describe('Test for loadScenarioFromCsv.', () => {
   // OK pattern 2.
   test('Validation is OK2.', async () => {
     const expected = await import(`./${describeDir}/test04-expected.json`);
-    await expect(SS.loadScenarioFromCsv(`${baseDir}/${describeDir}/test04-input.csv`, { 1: { value: 'test' } }))
+    await expect(SS.loadScenarioFromCsv(`${baseDir}/${describeDir}/test04-input.csv`, { 1: 'test' }))
       .resolves
       .toEqual(expected);
   });

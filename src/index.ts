@@ -79,27 +79,27 @@ const validate = (records: KeyStringObject[]): string[] => {
 /**
  * Convert csv record to Scenario type.
  * @param record csv record
- * @param replace replace value
+ * @param replaceValue replace value
  */
-const toScenario = (record: KeyStringObject, replace?: { value: string }): Scenario => {
+const toScenario = (record: KeyStringObject, replaceValue?: string): Scenario => {
   const result = {
     action: ActionType.find(x => x === record.action),
     selector: record.selector,
     value: record.value,
     waitTime: Number(record.waitTime),
   };
-  if (!replace) {
+  if (!replaceValue) {
     return result;
   }
-  return { ...result, ...replace };
+  return { ...result, value: replaceValue };
 }
 
 /**
  * Load Scenario data from csv file.
  * @param path csv file path
- * @param replace replace value
+ * @param replaceValue replace value
  */
-export const loadScenarioFromCsv = (path: string, replace: { [key: number]: { value: string } } = {}): Promise<Scenario[]> => {
+export const loadScenarioFromCsv = (path: string, replaceValue: { [key: number]: string } = {}): Promise<Scenario[]> => {
   return new Promise((resolve, reject) => {
     fs.createReadStream(path)
       .pipe(parse({ columns: true }, (_, d) => {
@@ -114,7 +114,7 @@ export const loadScenarioFromCsv = (path: string, replace: { [key: number]: { va
             throw new Error(validateResult.join('\n'));
           }
           
-          resolve(Array.from<{}>(d).map((x, i) => toScenario(x, replace[i])));
+          resolve(Array.from<{}>(d).map((x, i) => toScenario(x, replaceValue[i])));
         } catch (e) {
           reject(e.message);
         }
