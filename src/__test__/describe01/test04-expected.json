@@ -1,0 +1,5 @@
+[
+  { "action": "Click", "selector": "aaa", "value": "val", "waitTime": 0 },
+  { "action": "Select", "selector": "bbb", "value": "test", "waitTime": 10 },
+  { "action": "Input", "selector": "ccc", "value": "", "waitTime": 0 }
+]

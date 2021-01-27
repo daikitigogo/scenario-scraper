@@ -2,7 +2,13 @@ import * as fs from 'fs';
 import { parse } from 'csv';
 import { launch, Browser, Page, ElementHandle } from 'puppeteer';
 import { evalFunction, evalParentFunction } from './on-browser';
-import { KeyStringObject } from './types';
+
+/**
+ * Object that key is string.
+ */
+export type KeyStringObject<T = string> = {
+  [key: string]: T;
+}
 
 /**
  * Action type for ScenarioPage.transition.
@@ -73,21 +79,27 @@ const validate = (records: KeyStringObject[]): string[] => {
 /**
  * Convert csv record to Scenario type.
  * @param record csv record
+ * @param replace replace value
  */
-const toScenario = (record: KeyStringObject): Scenario => {
-  return {
+const toScenario = (record: KeyStringObject, replace?: { value: string }): Scenario => {
+  const result = {
     action: ActionType.find(x => x === record.action),
     selector: record.selector,
     value: record.value,
     waitTime: Number(record.waitTime),
   };
+  if (!replace) {
+    return result;
+  }
+  return { ...result, ...replace };
 }
 
 /**
  * Load Scenario data from csv file.
  * @param path csv file path
+ * @param replace replace value
  */
-export const loadScenarioFromCsv = (path: string): Promise<Scenario[]> => {
+export const loadScenarioFromCsv = (path: string, replace: { [key: number]: { value: string } } = {}): Promise<Scenario[]> => {
   return new Promise((resolve, reject) => {
     fs.createReadStream(path)
       .pipe(parse({ columns: true }, (_, d) => {
@@ -102,7 +114,7 @@ export const loadScenarioFromCsv = (path: string): Promise<Scenario[]> => {
             throw new Error(validateResult.join('\n'));
           }
           
-          resolve(Array.from<{}>(d).map(x => toScenario(x)));
+          resolve(Array.from<{}>(d).map((x, i) => toScenario(x, replace[i])));
         } catch (e) {
           reject(e.message);
         }
