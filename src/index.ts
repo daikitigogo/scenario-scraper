@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { parse } from 'csv';
-import { launch, Browser, Page, ElementHandle } from 'puppeteer';
+import { launch, Browser, Page, ElementHandle, LaunchOptions } from 'puppeteer';
 import { evalFunction, evalParentFunction } from './on-browser';
 
 /**
@@ -254,7 +254,8 @@ export class ScenarioBrowser {
    */
   async newPage(url?: string): Promise<ScenarioPage> {
     const browser = await this.browser;
-    const page = browser.pages.length == 1 
+    const pageCount = (await browser.pages()).length;
+    const page = pageCount === 1
       ? browser.pages().then(x => x[0])
       : browser.newPage();
     const result = new ScenarioPage(page);
@@ -274,4 +275,4 @@ export class ScenarioBrowser {
   }
 };
 
-export const puppeteerLaunch = (headless: boolean) => launch({ headless });
+export const puppeteerLaunch = (options: LaunchOptions) => launch(options);
