@@ -274,4 +274,4 @@ export class ScenarioBrowser {
   }
 };
 
-export const puppeteerLaunch = launch;
+export const puppeteerLaunch = (headless: boolean) => launch({ headless });

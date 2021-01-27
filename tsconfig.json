@@ -3,6 +3,8 @@
   "compilerOptions": {
     "outDir": "./dist",
     "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
