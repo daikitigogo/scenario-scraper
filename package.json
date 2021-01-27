@@ -4,7 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
     "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:daikitigogo/scenario-scraper.git"
   },
   "author": "",
   "license": "ISC",
