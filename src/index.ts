@@ -44,10 +44,15 @@ const ScenarioAction = {
 } as const;
 
 /**
+ * Action type.
+ */
+export type ActionType = typeof ActionType[number];
+
+/**
  * Argument type for ScenarioPage.transition.
  */
 export type Scenario = {
-  action: typeof ActionType[number];
+  action: ActionType;
   selector: string;
   value?: string;
   waitTime?: number;
@@ -126,7 +131,7 @@ export const loadScenarioFromCsv = (path: string, replace: KeyStringObject = {})
 /**
  * Argument type for ScenarioPage.map or mapArray.
  */
-type ScrapeMapping<T> = {
+export type ScrapeMapping<T> = {
   [key in keyof T]: {
     selector: string;
     property: string;
@@ -136,7 +141,7 @@ type ScrapeMapping<T> = {
 /**
  * Return type for ScenarioPage.map or maparray.
  */
-type ScrapeResult<T> = T & {
+export type ScrapeResult<T> = T & {
   errors: {};
 };
 
