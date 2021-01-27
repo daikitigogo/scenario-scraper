@@ -273,3 +273,5 @@ export class ScenarioBrowser {
     await browser.close();
   }
 };
+
+export const puppeteerLaunch = launch;
