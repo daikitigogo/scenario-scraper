@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import { parse } from 'csv';
 import { launch, Browser, Page, ElementHandle, LaunchOptions } from 'puppeteer';
-import { evalFunction, evalParentFunction } from './on-browser';
+import { evalFunction, evalArrayFunction } from './on-browser';
 
 /**
  * Object that key is string.
@@ -129,6 +129,37 @@ export const loadScenarioFromCsv = (path: string, replace: KeyStringObject = {})
 };
 
 /**
+ * If selector is false value, extract target is current element.
+ * @param se target scenario element
+ * @param selector target selector
+ */
+const evaluate = async (se: ScenarioElement, selector?: string): Promise<KeyStringObject> => {
+  if (!selector) {
+    return se.current;
+  }
+  return await se.element.$eval(selector, evalFunction)
+    .catch(e => ({ error: e.toString() })) as KeyStringObject;
+}
+
+/**
+ * Extract page content according mappings definition.
+ * @param el target element
+ * @param mappings mapping definition
+ */
+const extract = async <T extends KeyStringObject> (se: ScenarioElement, mappings: ScrapeMapping<T>): Promise<ScrapeResult<T>> => {
+  const results = await Promise.all(Object.entries(mappings)
+    .map(async ([k, v]) => {
+      const result = await evaluate(se, v.selector);
+      return [k, result[v.property], result.error] as const;
+    }));
+  const errors = results
+    .filter(([_1, _2, e]) => e)
+    .reduce((a, [k, _, e]) => ({ ...a, [k]: e }), {});
+  return results
+    .reduce((a, [k, v]) => ({ ...a, [k]: v }), { errors } as ScrapeResult<T>);
+}
+
+/**
  * Argument type for ScenarioPage.map or mapArray.
  */
 export type ScrapeMapping<T> = {
@@ -145,6 +176,35 @@ export type ScrapeResult<T> = T & {
   errors: {};
 };
 
+class ScenarioElement {
+
+  /**
+   * Constructor
+   * @param element scenario element
+   * @package current current element value
+   */
+  constructor(readonly element: ElementHandle<Element>, readonly current: KeyStringObject) { }
+
+  /**
+   * Extract page content according mappings definition.
+   * @param mapping mappings definition
+   */
+  async map<T extends KeyStringObject>(mappings: ScrapeMapping<T>): Promise<ScrapeResult<T>> {
+    return extract(this, mappings);
+  }
+
+  /**
+   * Extract page content as array according mappings definition.
+   * @param selector target selector
+   * @param mapping mapping definition
+   */
+  async mapArray<T extends KeyStringObject>(selector: string, mappings: ScrapeMapping<T>): Promise<Array<ScrapeResult<T>>> {
+    const elements = await this.element.$$(selector);
+    const currents = await this.element.$$eval(selector, evalArrayFunction);
+    return Promise.all(elements.map((el, i) => extract(new ScenarioElement(el, currents[i]), mappings)));
+  }
+}
+
 /**
  * Execute Scenario page class.
  */
@@ -152,13 +212,13 @@ class ScenarioPage {
 
   /**
    * Constructor
-   * @param page Promise&lt;Page>
+   * @param page scenario page
    */
   constructor(readonly page: Promise<Page>) { }
 
   /**
    * Goto url.
-   * @param url string
+   * @param url url
    */
   async goto(url: string) {
     const page = await this.page;
@@ -177,24 +237,25 @@ class ScenarioPage {
   }
 
   /**
-   * Extract page content according mappings definition.
-   * @param mapping mappings definition
+   * Get element as ScenarioElement.
+   * @param selector selector
    */
-  async map<T extends KeyStringObject>(mappings: ScrapeMapping<T>): Promise<ScrapeResult<T>> {
+  async element(selector?: string): Promise<ScenarioElement> {
     const page = await this.page;
-    const el = await page.$('html');
-    return this.extract(el, mappings);
+    const element = await page.$(selector || 'html');
+    const current = await page.$eval(selector || 'html', evalFunction);
+    return new ScenarioElement(element, current);
   }
 
   /**
-   * Extract page content as array according mappings definition.
-   * @param selector target selector
-   * @param mapping mapping definition
+   * Get elements as ScenarioElement[].
+   * @param selector selector
    */
-  async mapArray<T extends KeyStringObject>(selector: string, mappings: ScrapeMapping<T>): Promise<Array<ScrapeResult<T>>> {
+  async elementArray(selector: string): Promise<ScenarioElement[]> {
     const page = await this.page;
     const elements = await page.$$(selector);
-    return Promise.all(elements.map(el => this.extract(el, mappings)));
+    const currents = await page.$$eval(selector, evalArrayFunction);
+    return elements.map((el, i) => new ScenarioElement(el, currents[i]));
   }
 
   /**
@@ -203,38 +264,6 @@ class ScenarioPage {
   async close(): Promise<void> {
     const page = await this.page;
     await page.close();
-  }
-
-  /**
-   * Extract page content according mappings definition.
-   * @param el target element
-   * @param mappings mapping definition
-   */
-  private async extract<T extends KeyStringObject>(el: ElementHandle<Element>, mappings: ScrapeMapping<T>): Promise<ScrapeResult<T>> {
-    const results = await Promise.all(Object.entries(mappings)
-      .map(async ([k, v]) => {
-        const result = await this.eval(el, v.selector);
-        return [k, result[v.property], result.error] as const;
-      }));
-    const errors = results
-      .filter(([_1, _2, e]) => e)
-      .reduce((a, [k, _, e]) => ({ ...a, [k]: e }), {});
-    return results
-      .reduce((a, [k, v]) => ({ ...a, [k]: v }), { errors } as ScrapeResult<T>);
-  }
-
-  /**
-   * If selector is false value, extract target is current element.
-   * @param el target element
-   * @param selector target selector
-   */
-  private async eval(el: ElementHandle<Element>, selector?: string): Promise<KeyStringObject> {
-    if (selector) {
-      return await el.$eval(selector, evalFunction)
-        .catch(e => ({ error: e.toString() })) as KeyStringObject;
-    }
-    return await el.$eval(':first-child', evalParentFunction)
-      .catch(e => ({ error: e.toString() })) as KeyStringObject;
   }
 }
 

@@ -1,0 +1,20 @@
+[
+  {
+    "errors": {},
+    "text": "element-map-test1",
+    "alt": "alt1",
+    "className": "maparray"
+  },
+  {
+    "errors": {},
+    "text": "element-map-test2",
+    "alt": "alt2",
+    "className": "maparray"
+  },
+  {
+    "errors": {},
+    "text": "element-map-test3",
+    "alt": "alt3",
+    "className": "maparray"
+  }
+]

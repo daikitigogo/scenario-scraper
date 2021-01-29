@@ -80,7 +80,8 @@ describe('Test for ScenarioPage.', () => {
   test('map is OK.', async () => {
     const mappings = await import(`./${describeDir}/test02-input.json`);
     const page = await browser.newPage(rootUrl);
-    const result = await page.map(mappings);
+    const element = await page.element();
+    const result = await element.map(mappings);
     expect(result)
       .toEqual(await import(`./${describeDir}/test02-expected.json`));
   });
@@ -89,8 +90,32 @@ describe('Test for ScenarioPage.', () => {
   test('mapall is OK.', async () => {
     const mappings = await import(`./${describeDir}/test03-input.json`);
     const page = await browser.newPage(rootUrl);
-    const result = await page.mapArray('#maparray-test > div', mappings);
+    const element = await page.element();
+    const result = await element.mapArray('#maparray-test > div', mappings);
     expect(result)
       .toEqual(await import(`./${describeDir}/test03-expected.json`));
+  });
+});
+
+// ScenarioElement
+describe('Test for ScenarioElement.', () => {
+  const describeDir = 'describe03';
+
+  test('map is OK.', async () => {
+    const mappings = await import(`./${describeDir}/test01-input.json`);
+    const page = await browser.newPage(rootUrl);
+    const elements = await page.elementArray('#element-map-test .maparray');
+    const result = await Promise.all(elements.map(x => x.map(mappings)));
+    expect(result)
+      .toEqual(await import(`./${describeDir}/test01-expected.json`));
+  });
+
+  test('maparray is OK.', async () => {
+    const mappings = await import(`./${describeDir}/test02-input.json`);
+    const page = await browser.newPage(rootUrl);
+    const elements = await page.elementArray('#element-map-test .maparray');
+    const result = await Promise.all(elements.map(x => x.mapArray('.deep-array span', mappings)));
+    expect(result)
+      .toEqual(await import(`./${describeDir}/test02-expected.json`));
   });
 });
