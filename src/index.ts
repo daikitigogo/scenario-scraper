@@ -1,23 +1,7 @@
-import * as fs from 'fs';
-import { parse } from 'csv';
 import { launch, Browser, Page, ElementHandle, LaunchOptions } from 'puppeteer';
 import { evalFunction, evalArrayFunction } from './on-browser';
-
-/**
- * Object that key is string.
- */
-export type KeyStringObject<T = string> = {
-  [key: string]: T;
-}
-
-/**
- * Action type for ScenarioPage.transition.
- */
-const ActionType = [
-  'Click',
-  'Select',
-  'Input'
-] as const;
+import { Scenario } from './csv-loader';
+import { KeyStringObject, ScrapeMapping, ScrapeResult } from './type';
 
 /**
  * Scenario action for ScenarioPage.transition.
@@ -43,107 +27,6 @@ const ScenarioAction = {
   },
 } as const;
 
-/**
- * Action type.
- */
-export type ActionType = typeof ActionType[number];
-
-/**
- * Argument type for ScenarioPage.transition.
- */
-export type Scenario = {
-  action: ActionType;
-  selector: string;
-  value?: string;
-  waitTime?: number;
-};
-
-/**
- * Validate for csv record.
- * @param records csv records
- */
-const validate = (records: KeyStringObject[]): string[] => {
-  const results = records.map((record, i) => {
-    if (!record.action) {
-      return `Line: ${i + 1}, action is required.`;
-    }
-    if (!record.selector) {
-      return `Line: ${i + 1}, selector is required.`;
-    }
-    if (!ActionType.find(x => x === record.action)) {
-      return `Line: ${i + 1}, action must be ${ActionType}.`;
-    }
-    if (record.waitTime.match(/^[0-9]*$/) === null) {
-      return `Line: ${i + 1}, waitTime must be number.`
-    }
-    return '';
-  });
-  return results.filter(x => x);
-};
-
-/**
- * Convert csv record to Scenario type.
- * @param record csv record
- * @param replaceValue replace value
- */
-const toScenario = (record: KeyStringObject, replace: KeyStringObject): Scenario => {
-  const result = {
-    action: ActionType.find(x => x === record.action),
-    selector: record.selector,
-    value: record.value,
-    waitTime: Number(record.waitTime),
-  };
-  if (!result.value.startsWith('#bind:')) {
-    return result;
-  }
-  return { ...result, value: replace[result.value.split(':')[1]] };
-}
-
-/**
- * Load Scenario data from csv file.
- * @param path csv file path
- * @param replaceValue replace value
- */
-export const loadScenarioFromCsv = (path: string, replace: KeyStringObject = {}): Promise<Scenario[]> => {
-  return new Promise((resolve, reject) => {
-    fs.createReadStream(path)
-      .pipe(parse({ columns: true }, (_, d) => {
-        try {
-          const records = Array.from<{}>(d);
-          if (!records.length) {
-            throw new Error('File is empty.');
-          }
-
-          const validateResult = validate(records);
-          if (validateResult.length) {
-            throw new Error(validateResult.join('\n'));
-          }
-          
-          resolve(Array.from<{}>(d).map(x => toScenario(x, replace)));
-        } catch (e) {
-          reject(e.message);
-        }
-      })
-    );
-  });
-};
-
-/**
- * Argument type for ScenarioPage.map or mapArray.
- */
-export type ScrapeMapping<T> = {
-  [key in keyof T]: {
-    selector: string;
-    property: string;
-  };
-};
-
-/**
- * Return type for ScenarioPage.map or maparray.
- */
-export type ScrapeResult<T> = T & {
-  errors: {};
-};
 
 class ScenarioElement {
 

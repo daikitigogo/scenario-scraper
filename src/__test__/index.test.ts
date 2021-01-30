@@ -1,6 +1,7 @@
 import * as SS from '../index';
 import { launch } from 'puppeteer';
 import * as http from 'http-server';
+import { loadScenarioFromCsv } from '../csv-loader';
 
 // Setup
 const server = http.createServer({ root: 'src/__test__/html' });
@@ -23,7 +24,7 @@ describe('Test for loadScenarioFromCsv.', () => {
 
   // NG pattern 1.
   test('File is empty.', async () => {
-    await expect(async () => SS.loadScenarioFromCsv(`${baseDir}/${describeDir}/test01-input.csv`))
+    await expect(async () => loadScenarioFromCsv(`${baseDir}/${describeDir}/test01-input.csv`))
       .rejects
       .toBe('File is empty.');
   });
@@ -31,7 +32,7 @@ describe('Test for loadScenarioFromCsv.', () => {
   // NG pattern 2.
   test('Validation is NG.', async () => {
     const expected = await import(`./${describeDir}/test02-expected.json`);
-    await expect(async () => SS.loadScenarioFromCsv(`${baseDir}/${describeDir}/test02-input.csv`))
+    await expect(async () => loadScenarioFromCsv(`${baseDir}/${describeDir}/test02-input.csv`))
       .rejects
       .toBe(expected.join('\n'));
   });
@@ -39,7 +40,7 @@ describe('Test for loadScenarioFromCsv.', () => {
   // OK pattern 1.
   test('Validation is OK1.', async () => {
     const expected = await import(`./${describeDir}/test03-expected.json`);
-    await expect(SS.loadScenarioFromCsv(`${baseDir}/${describeDir}/test03-input.csv`))
+    await expect(loadScenarioFromCsv(`${baseDir}/${describeDir}/test03-input.csv`))
       .resolves
       .toEqual(expected);
   });
@@ -47,7 +48,7 @@ describe('Test for loadScenarioFromCsv.', () => {
   // OK pattern 2.
   test('Validation is OK2.', async () => {
     const expected = await import(`./${describeDir}/test04-expected.json`);
-    await expect(SS.loadScenarioFromCsv(`${baseDir}/${describeDir}/test04-input.csv`, { test: 'bindValue!' }))
+    await expect(loadScenarioFromCsv(`${baseDir}/${describeDir}/test04-input.csv`, { test: 'bindValue!' }))
       .resolves
       .toEqual(expected);
   });
