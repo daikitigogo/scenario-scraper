@@ -1,10 +1,10 @@
-import * as SS from '../index';
+import * as SS from '../scraping';
 import { launch } from 'puppeteer';
 import * as http from 'http-server';
 import { loadScenarioFromCsv } from '../csv-loader';
 
 // Setup
-const server = http.createServer({ root: 'src/__test__/html' });
+const server = http.createServer({ root: 'src/module/__test__/html' });
 server.listen(8080);
 const browser = new SS.ScenarioBrowser(launch({ headless: true }));
 // beforeAll(() => {
@@ -15,7 +15,7 @@ afterAll(async () => {
 });
 
 // base value
-const baseDir = './src/__test__';
+const baseDir = './src/module/__test__';
 const rootUrl = 'http://localhost:8080';
 
 // loadScenarioFromCsv
