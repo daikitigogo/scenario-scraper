@@ -61,10 +61,20 @@ const toScenario = (record: KeyStringObject, replace: KeyStringObject): Scenario
     value: record.value,
     waitTime: Number(record.waitTime),
   };
-  if (!result.value.startsWith('#bind:')) {
+  if (!Object.values(result).find(x => x.toString().startsWith('#bind:'))) {
     return result;
   }
-  return { ...result, value: replace[result.value.split(':')[1]] };
+  const bind = (value: string | number) => {
+    if (typeof value === 'number' || !value.startsWith('#bind:')) {
+      return value;
+    }
+    return replace[value.split(':')[1]];
+  };
+  return Object.entries(result)
+    .reduce((accum, [k, v]) => ({
+      ...accum,
+      [k]: bind(v),
+    }), result);
 }
 
 /**
