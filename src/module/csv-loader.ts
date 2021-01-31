@@ -115,9 +115,6 @@ const validateMapping = (records: KeyStringObject[]): string[] => {
     if (!record.name) {
       return `Line: ${i + 1}, name is required.`;
     }
-    if (!record.selector) {
-      return `Line: ${i + 1}, selector is required.`;
-    }
     if (!record.property) {
       return `Line: ${i + 1}, property is required.`;
     }
