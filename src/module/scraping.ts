@@ -6,7 +6,7 @@ import { KeyStringObject, ScrapeMapping, ScrapeResult } from './type';
 /**
  * Scenario action for ScenarioPage.transition.
  */
-const ScenarioAction = {
+export const ScenarioAction = {
   Click: async (page: Page, scenario: Omit<Scenario, 'action'>): Promise<void> => {
     await page.click(scenario.selector);
     if (scenario.waitTime) {
@@ -28,7 +28,7 @@ const ScenarioAction = {
 } as const;
 
 
-class ScenarioElement {
+export class ScenarioElement {
 
   /**
    * Constructor
@@ -95,7 +95,7 @@ class ScenarioElement {
 /**
  * Execute Scenario page class.
  */
-class ScenarioPage {
+export class ScenarioPage {
 
   /**
    * Constructor

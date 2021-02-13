@@ -1,9 +1,7 @@
 /**
  * Object that key is string.
  */
-export type KeyStringObject<T = string> = {
-  [key: string]: T;
-}
+export type KeyStringObject<T = string> = Record<string, T>;
 
 /**
  * Argument type for ScenarioPage.map or mapArray.
