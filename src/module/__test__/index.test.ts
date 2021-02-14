@@ -63,15 +63,11 @@ describe('Test for ScenarioPage.', () => {
     const scenario = await import(`./${describeDir}/test01-input.json`);
     const page = await browser.newPage(rootUrl);
     await page.transition(scenario);
-    const result = await (await page.page).evaluate(() => {
-      // @ts-ignore
-      const text = (id) => document.querySelector(id).textContent.trim();
-      return {
-        click: text('#click-result'),
-        select: text('#select-result'),
-        input: text('#input-result'),
-      }
-    });
+    const result = await (await page.element()).map({
+      click: { selector: '#click-result', property: 'textContent' },
+      select: { selector: '#select-result', property: 'textContent' },
+      input: { selector: '#input-result', property: 'textContent' },
+    })
     expect(result)
       .toEqual(await import(`./${describeDir}/test01-expected.json`));
     await page.close();

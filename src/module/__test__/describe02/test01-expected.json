@@ -1,5 +1,6 @@
 {
   "click": "click-test!",
   "select": "1",
-  "input": "input-test!"
+  "input": "input-test!",
+  "errors": {}
 }

@@ -35,7 +35,7 @@ export class ScenarioElement {
    * @param element scenario element
    * @package current current element value
    */
-  constructor(readonly element: ElementHandle<Element>, readonly current: KeyStringObject) { }
+  constructor(private readonly el: ElementHandle<Element>, private readonly current: KeyStringObject) { }
 
   /**
    * Extract page content according mappings definition.
@@ -51,9 +51,29 @@ export class ScenarioElement {
    * @param mapping mapping definition
    */
   async mapArray<T extends KeyStringObject>(selector: string, mappings: ScrapeMapping<T>): Promise<Array<ScrapeResult<T>>> {
-    const elements = await this.element.$$(selector);
-    const currents = await this.element.$$eval(selector, evalArrayFunction);
+    const elements = await this.el.$$(selector);
+    const currents = await this.el.$$eval(selector, evalArrayFunction);
     return Promise.all(elements.map((el, i) => this.extract(new ScenarioElement(el, currents[i]), mappings)));
+  }
+
+  /**
+   * Get element as ScenarioElement.
+   * @param selector selector
+   */
+  async element(selector?: string): Promise<ScenarioElement> {
+    const element = await this.el.$(selector || 'html');
+    const current = await this.el.$eval(selector || 'html', evalFunction);
+    return new ScenarioElement(element, current);
+  }
+
+  /**
+   * Get elements as ScenarioElement[].
+   * @param selector selector
+   */
+  async elementArray(selector: string): Promise<ScenarioElement[]> {
+    const elements = await this.el.$$(selector);
+    const currents = await this.el.$$eval(selector, evalArrayFunction);
+    return elements.map((el, i) => new ScenarioElement(el, currents[i]));
   }
 
   /**
@@ -61,7 +81,7 @@ export class ScenarioElement {
    * @param el target element
    * @param mappings mapping definition
    */
-  async extract<T extends KeyStringObject>(se: ScenarioElement, mappings: ScrapeMapping<T>): Promise<ScrapeResult<T>> {
+  private async extract<T extends KeyStringObject>(se: ScenarioElement, mappings: ScrapeMapping<T>): Promise<ScrapeResult<T>> {
     const results = await Promise.all(Object.entries(mappings)
       .map(async ([k, v]) => {
         const result = await this.evaluate(se, v.selector);
@@ -83,11 +103,11 @@ export class ScenarioElement {
    * @param se target scenario element
    * @param selector target selector
    */
-  async evaluate(se: ScenarioElement, selector?: string): Promise<KeyStringObject> {
+  private async evaluate(se: ScenarioElement, selector?: string): Promise<KeyStringObject> {
     if (!selector) {
       return se.current;
     }
-    return await se.element.$eval(selector, evalFunction)
+    return await se.el.$eval(selector, evalFunction)
       .catch(e => ({ error: e.toString() })) as KeyStringObject;
   }
 }
@@ -101,7 +121,7 @@ export class ScenarioPage {
    * Constructor
    * @param page scenario page
    */
-  constructor(readonly page: Promise<Page>) { }
+  constructor(private readonly page: Promise<Page>) { }
 
   /**
    * Goto url.
