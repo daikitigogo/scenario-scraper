@@ -18,6 +18,7 @@
     "@types/http-server": "^0.10.1",
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.21",
+    "chromium": "^3.0.2",
     "http-server": "^0.12.3",
     "jest": "^26.6.3",
     "ts-jest": "^26.4.4",
@@ -26,9 +27,9 @@
   },
   "private": true,
   "dependencies": {
-    "@types/puppeteer": "^5.4.2",
+    "@types/puppeteer-core": "^5.4.0",
     "csv": "^5.3.2",
-    "puppeteer": "^5.5.0"
+    "puppeteer-core": "^8.0.0"
   },
   "jest": {
     "moduleFileExtensions": [

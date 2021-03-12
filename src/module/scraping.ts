@@ -1,4 +1,4 @@
-import { launch, Browser, Page, ElementHandle, LaunchOptions } from 'puppeteer';
+import { launch, Browser, Page, ElementHandle } from 'puppeteer-core';
 import { evalFunction, evalArrayFunction } from './on-browser';
 import { Scenario } from './csv-loader';
 import { KeyStringObject, ScrapeMapping, ScrapeResult } from './type';
@@ -206,5 +206,3 @@ export class ScenarioBrowser {
     await browser.close();
   }
 };
-
-export const puppeteerLaunch = (options: LaunchOptions) => launch(options);
