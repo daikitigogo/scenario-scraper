@@ -16,6 +16,6 @@ export type ScrapeMapping<T> = {
 /**
  * Return type for ScenarioPage.map or maparray.
  */
-export type ScrapeResult<T> = Partial<T> & {
-  errors: {};
+export type ScrapeResult<T> = T & {
+  errors?: KeyStringObject;
 };
