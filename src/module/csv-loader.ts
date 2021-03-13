@@ -141,7 +141,7 @@ const toMapping = <T extends KeyStringObject> (records: KeyStringObject[]): Scra
  * Load Mapping data from csv file.
  * @param path csv file path
  */
-export const loadMappingFromCsv = async <T extends KeyStringObject> (path: string): Promise<ScrapeMapping<T>> => {
+export const loadMappingFromCsv = async <T extends KeyStringObject<string | undefined>> (path: string): Promise<ScrapeMapping<T>> => {
   return new Promise((resolve, reject) => {
     fs.createReadStream(path)
       .pipe(parse({ columns: true }, (_, d) => {
