@@ -1,5 +1,4 @@
 import * as SS from '../scraping';
-import { launch } from 'puppeteer-core';
 import * as http from 'http-server';
 import { loadScenarioFromCsv } from '../csv-loader';
 const chromium = require('chromium');
@@ -7,7 +6,7 @@ const chromium = require('chromium');
 // Setup
 const server = http.createServer({ root: 'src/module/__test__/html' });
 server.listen(8080);
-const browser = new SS.ScenarioBrowser(launch({ headless: true, executablePath: chromium.path }));
+const browser = new SS.ScenarioBrowser(chromium.path);
 // beforeAll(() => {
 // });
 afterAll(async () => {
