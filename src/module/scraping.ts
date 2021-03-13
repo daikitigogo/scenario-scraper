@@ -1,4 +1,4 @@
-import { launch, Browser, Page, ElementHandle } from 'puppeteer-core';
+import { Browser, Page, ElementHandle } from 'puppeteer-core';
 import { evalFunction, evalArrayFunction } from './on-browser';
 import { Scenario } from './csv-loader';
 import { KeyStringObject, ScrapeMapping, ScrapeResult } from './type';
@@ -183,7 +183,7 @@ export class ScenarioBrowser {
    * Constructor
    * @param browser puppeteer`s browser
    */
-  constructor(private readonly browser: Promise<Browser> = launch()) { }
+  constructor(private readonly browser: Promise<Browser>) { }
 
   /**
    * Create new page.
