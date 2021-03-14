@@ -4,7 +4,7 @@
  */
 export const evalFunction = (el: Element): { [key: string]: string } => {
   return el.getAttributeNames()
-    .reduce((accum, name) => Object.assign(accum, { [name]: el.getAttribute(name) }), { textContent: el.textContent?.trim() });
+    .reduce((accum, name) => Object.assign(accum, { [name]: el.getAttribute(name) }), { textContent: el.textContent?.trim() ?? '' });
 };
 
 /**
@@ -14,5 +14,5 @@ export const evalFunction = (el: Element): { [key: string]: string } => {
 export const evalArrayFunction = (els: Element[]): Array<{ [key: string]: string }> => {
   return els.map(el => 
     el.getAttributeNames()
-      .reduce((accum, name) => Object.assign(accum, { [name]: el.getAttribute(name) }), { textContent: el.textContent?.trim() }));
+      .reduce((accum, name) => Object.assign(accum, { [name]: el.getAttribute(name) }), { textContent: el.textContent?.trim() ?? '' }));
 };
